@@ -4,8 +4,10 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_deep_dive/common/components/custom_text_form_field.dart';
 import 'package:flutter_deep_dive/common/const/colors.dart';
+import 'package:flutter_deep_dive/common/const/environments.dart';
 import 'package:flutter_deep_dive/common/layout/default_layout.dart';
 import 'package:flutter_deep_dive/common/view/root_tab.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -16,6 +18,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final dio = Dio();
+  final secureStorage = FlutterSecureStorage();
   final String ip = 'http://127.0.0.1:3000';
   String email = '';
   String password = '';
@@ -72,10 +75,15 @@ class _LoginScreenState extends State<LoginScreen> {
                   headers: {'authorization': 'Basic $token'},
                 ),
               );
+              print(resp.data);
+              final aToken = resp.data['accessToken'];
+              final rToken = resp.data['refreshToken'];
 
+              await secureStorage.write(key: ACCESS_TOKEN_KEY, value: aToken);
+              await secureStorage.write(key: REFRESH_TOKEN_KEY, value: rToken);
               Navigator.of(context)
                   .push(MaterialPageRoute(builder: (_) => const RootTab()));
-              print(resp.data);
+
             },
             child: Text("로그인"),
             style: ElevatedButton.styleFrom(
