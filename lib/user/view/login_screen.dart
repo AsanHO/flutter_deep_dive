@@ -19,7 +19,6 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final dio = Dio();
   final secureStorage = FlutterSecureStorage();
-  final String ip = 'http://127.0.0.1:3000';
   String email = '';
   String password = '';
 
@@ -76,7 +75,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     String token = stringToBase64.encode('$email:$password');
 
                     final resp = await dio.post(
-                      "$ip/auth/login",
+                      "$IP/auth/login",
                       options: Options(
                         headers: {'authorization': 'Basic $token'},
                       ),

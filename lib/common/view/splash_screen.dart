@@ -31,10 +31,9 @@ class _SplashScreenState extends State<SplashScreen> {
     final accessToken = await storage.read(key: ACCESS_TOKEN_KEY);
 
     final dio = Dio();
-    const String ip = 'http://127.0.0.1:3000';
     try{
       final resp = await dio.post(
-        'http://$ip/auth/token',
+        '$IP/auth/token',
         options: Options(
           headers: {
             'authorization': 'Bearer $refreshToken',
