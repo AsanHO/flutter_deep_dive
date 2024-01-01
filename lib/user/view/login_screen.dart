@@ -26,78 +26,87 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return DefaultLayout(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const Text(
-            "환영합니다.",
-            style: TextStyle(fontSize: 34, fontWeight: FontWeight.w500),
-          ),
-          const SizedBox(
-            height: 16,
-          ),
-          const Text(
-            "이메일과 비밀번호를 입력해서 로그인해주세요\n오늘도 성공적인 주문이 되길 :)",
-            style: TextStyle(fontSize: 18, color: BODY_TEXT_COLOR),
-          ),
-          Image.asset(
-            'asset/img/misc/logo.png',
-            width: MediaQuery.of(context).size.width * 0.4,
-          ),
-          const SizedBox(
-            height: 16,
-          ),
-          CustomTextFormField(
-            hintText: "이메일",
-            onChanged: (String value) {
-              email = value;
-            },
-          ),
-          const SizedBox(
-            height: 16,
-          ),
-          CustomTextFormField(
-            hintText: "비밀번호",
-            obscureText: true,
-            onChanged: (String value) {
-              password = value;
-            },
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              Codec<String, String> stringToBase64 = utf8.fuse(base64);
-
-              String token = stringToBase64.encode('$email:$password');
-
-              final resp = await dio.post(
-                "$ip/auth/login",
-                options: Options(
-                  headers: {'authorization': 'Basic $token'},
+      child: SingleChildScrollView(
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+        child: SafeArea(
+          bottom: true,
+          child: Padding(
+            padding: const EdgeInsets.all(10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const Text(
+                  "환영합니다.",
+                  style: TextStyle(fontSize: 34, fontWeight: FontWeight.w500),
                 ),
-              );
-              print(resp.data);
-              final aToken = resp.data['accessToken'];
-              final rToken = resp.data['refreshToken'];
+                const SizedBox(
+                  height: 16,
+                ),
+                const Text(
+                  "이메일과 비밀번호를 입력해서 로그인해주세요\n오늘도 성공적인 주문이 되길 :)",
+                  style: TextStyle(fontSize: 18, color: BODY_TEXT_COLOR),
+                ),
+                Image.asset(
+                  'asset/img/misc/logo.png',
+                  width: MediaQuery.of(context).size.width * 0.4,
+                ),
+                const SizedBox(
+                  height: 16,
+                ),
+                CustomTextFormField(
+                  hintText: "이메일",
+                  onChanged: (String value) {
+                    email = value;
+                  },
+                ),
+                const SizedBox(
+                  height: 16,
+                ),
+                CustomTextFormField(
+                  hintText: "비밀번호",
+                  obscureText: true,
+                  onChanged: (String value) {
+                    password = value;
+                  },
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    Codec<String, String> stringToBase64 = utf8.fuse(base64);
 
-              await secureStorage.write(key: ACCESS_TOKEN_KEY, value: aToken);
-              await secureStorage.write(key: REFRESH_TOKEN_KEY, value: rToken);
-              Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (_) => const RootTab()));
+                    String token = stringToBase64.encode('$email:$password');
 
-            },
-            child: Text("로그인"),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: PRIMARY_COLOR,
+                    final resp = await dio.post(
+                      "$ip/auth/login",
+                      options: Options(
+                        headers: {'authorization': 'Basic $token'},
+                      ),
+                    );
+                    print(resp.data);
+                    final aToken = resp.data['accessToken'];
+                    final rToken = resp.data['refreshToken'];
+
+                    await secureStorage.write(key: ACCESS_TOKEN_KEY, value: aToken);
+                    await secureStorage.write(key: REFRESH_TOKEN_KEY, value: rToken);
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(builder: (_) => const RootTab()));
+
+                  },
+                  child: Text("로그인"),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: PRIMARY_COLOR,
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {},
+                  child: Text("회원가입"),
+                  style: TextButton.styleFrom(
+                    foregroundColor: Colors.black,
+                  ),
+                ),
+              ],
             ),
           ),
-          TextButton(
-            onPressed: () {},
-            child: Text("회원가입"),
-            style: TextButton.styleFrom(
-              foregroundColor: Colors.black,
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
