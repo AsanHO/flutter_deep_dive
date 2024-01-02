@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_deep_dive/common/const/environments.dart';
 import 'package:flutter_deep_dive/restaurant/components/restaurant_card.dart';
+import 'package:flutter_deep_dive/restaurant/models/restaurant_model.dart';
 
 class RestaurantScreen extends StatelessWidget {
   const RestaurantScreen({Key? key}) : super(key: key);
@@ -35,22 +36,15 @@ class RestaurantScreen extends StatelessWidget {
               }
               return ListView.separated(
                   itemBuilder: (_, idx) {
-                    final item = snapshot.data![idx];
-                    return RestaurantCard(
-                      image: Image.network(
-                        '$IP${item['thumbUrl']}',
-                        fit: BoxFit.cover,
-                      ),
-                      name: item['name'],
-                      tags: List<String>.from(item['tags']),
-                      ratingsCount: item['ratingsCount'],
-                      deliveryTime: item['deliveryTime'],
-                      deliveryFee: item['deliveryFee'],
-                      ratings: item['ratings'],
+                    final RestaurantModel item =
+                        RestaurantModel.fromJson(json: snapshot.data![idx]);
+
+                    return RestaurantCard.fromModel(
+                      model: item,
                     );
                   },
                   separatorBuilder: (_, idx) {
-                    return Divider();
+                    return Divider(height: 40,);
                   },
                   itemCount: snapshot.data!.length);
             },
