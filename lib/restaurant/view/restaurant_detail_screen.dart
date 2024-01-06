@@ -5,6 +5,9 @@ import 'package:flutter_deep_dive/common/layout/default_layout.dart';
 import 'package:flutter_deep_dive/product/components/product_card.dart';
 import 'package:flutter_deep_dive/restaurant/components/restaurant_card.dart';
 import 'package:flutter_deep_dive/restaurant/models/restaurant_detail_model.dart';
+import 'package:flutter_deep_dive/restaurant/repository/restaurant_repository.dart';
+
+import '../../common/dio/dio.dart';
 
 class RestaurantDetailScreen extends StatelessWidget {
   final String id;
@@ -16,13 +19,15 @@ class RestaurantDetailScreen extends StatelessWidget {
     required this.title,
   });
 
-  Future<Map<String, dynamic>> getRestaurantDetail() async {
+  Future<RestaurantDetailModel> getRestaurantDetail() async {
     final dio = Dio();
-
-    final accessToken = await storage.read(key: ACCESS_TOKEN_KEY);
-    final resp = await dio.get("$IP/restaurant/$id",
-        options: Options(headers: {'authorization': 'Bearer $accessToken'}));
-    return resp.data;
+    dio.interceptors.add(
+      CustomInterceptor(
+        storage: storage,
+      ),
+    );
+    final repository = RestaurantRepository(dio, baseUrl: '$IP/restaurant');
+    return repository.getRestaurantDetail(id: id);
   }
 
   @override
@@ -37,9 +42,7 @@ class RestaurantDetailScreen extends StatelessWidget {
                 child: CircularProgressIndicator.adaptive(),
               );
             }
-            final item = RestaurantDetailModel.fromJson(
-              snapshot.data!,
-            );
+            final item = snapshot.data;
             return CustomScrollView(
               slivers: [
                 renderTop(
@@ -84,13 +87,13 @@ class RestaurantDetailScreen extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 16.0),
       sliver: SliverList(
         delegate: SliverChildBuilderDelegate(
-              (context, index) {
+          (context, index) {
             return Padding(
               padding: const EdgeInsets.only(top: 16.0),
               child: ProductCard(model: model.products[index]),
             );
           },
-          childCount:model.products.length,
+          childCount: model.products.length,
         ),
       ),
     );
