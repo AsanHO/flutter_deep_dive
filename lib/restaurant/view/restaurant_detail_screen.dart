@@ -32,12 +32,13 @@ class RestaurantDetailScreen extends StatelessWidget {
         child: FutureBuilder(
           future: getRestaurantDetail(),
           builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-            if (!snapshot.hasData)
+            if (!snapshot.hasData) {
               return const Center(
                 child: CircularProgressIndicator.adaptive(),
               );
+            }
             final item = RestaurantDetailModel.fromJson(
-              json: snapshot.data!,
+              snapshot.data!,
             );
             return CustomScrollView(
               slivers: [
