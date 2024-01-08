@@ -46,6 +46,7 @@ class CustomInterceptor extends Interceptor {
 
     if (refreshToken == null){
       return handler.reject(err);
+
     }
 
     final isStatus401 = err.response?.statusCode == 401;
