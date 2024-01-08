@@ -14,7 +14,11 @@ class StateProviderScreen extends ConsumerWidget {
       child: Column(
         children: [
           Text(provider.toString()),
-          ElevatedButton(onPressed: (){ref.read(numProvider.notifier).update((state) => state+=1);}, child: Text("Up"))
+ElevatedButton(
+    onPressed: () {
+      ref.read(numProvider.notifier).update((state) => state +  1);
+    },
+    child: Text("Up"))
         ],
       ),
     );
