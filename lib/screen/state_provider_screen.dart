@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_deep_dive/common/layout/default_layout.dart';
-import 'package:flutter_deep_dive/riverpod/state.dart';
+import 'package:flutter_deep_dive/riverpod/state_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class StateProviderScreen extends ConsumerWidget {
