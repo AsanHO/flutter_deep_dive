@@ -6,10 +6,11 @@ import 'package:flutter_deep_dive/product/components/product_card.dart';
 import 'package:flutter_deep_dive/restaurant/components/restaurant_card.dart';
 import 'package:flutter_deep_dive/restaurant/models/restaurant_detail_model.dart';
 import 'package:flutter_deep_dive/restaurant/repository/restaurant_repository.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../common/dio/dio.dart';
 
-class RestaurantDetailScreen extends StatelessWidget {
+class RestaurantDetailScreen extends ConsumerStatefulWidget {
   final String id;
   final String title;
 
@@ -19,21 +20,21 @@ class RestaurantDetailScreen extends StatelessWidget {
     required this.title,
   });
 
+  @override
+  ConsumerState<RestaurantDetailScreen> createState() => _RestaurantDetailScreenState();
+}
+
+class _RestaurantDetailScreenState extends ConsumerState<RestaurantDetailScreen> {
   Future<RestaurantDetailModel> getRestaurantDetail() async {
-    final dio = Dio();
-    dio.interceptors.add(
-      CustomInterceptor(
-        storage: storage,
-      ),
-    );
+    final dio = ref.watch(dioProvider);
     final repository = RestaurantRepository(dio, baseUrl: '$IP/restaurant');
-    return repository.getRestaurantDetail(id: id);
+    return repository.getRestaurantDetail(id: widget.id);
   }
 
   @override
   Widget build(BuildContext context) {
     return DefaultLayout(
-        title: title,
+        title: widget.title,
         child: FutureBuilder(
           future: getRestaurantDetail(),
           builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {

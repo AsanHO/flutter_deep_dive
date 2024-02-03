@@ -22,7 +22,7 @@ class CursorPagination<T> {
 @JsonSerializable()
 class CursorPaginationMeta {
   final int count;
-  final bool isNotLast;
+  final bool? isNotLast;
 
   CursorPaginationMeta({
     required this.count,
