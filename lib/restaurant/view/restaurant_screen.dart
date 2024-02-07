@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_deep_dive/common/const/environments.dart';
 import 'package:flutter_deep_dive/common/dio/dio.dart';
+import 'package:flutter_deep_dive/common/models/cursor_pagination_model.dart';
 import 'package:flutter_deep_dive/restaurant/components/restaurant_card.dart';
 import 'package:flutter_deep_dive/restaurant/models/restaurant_model.dart';
 import 'package:flutter_deep_dive/restaurant/repository/restaurant_repository.dart';
@@ -34,16 +35,16 @@ class _RestaurantScreenState extends ConsumerState<RestaurantScreen> {
     return Center(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: FutureBuilder(
-          future: getRestaurant(),
-          builder: (context, AsyncSnapshot<List> snapshot) {
+        child: FutureBuilder<CursorPagination<RestaurantModel>>(
+          future: ref.watch(restaurantRepositoryProvider).getRestaurants(),
+          builder: (context, AsyncSnapshot<CursorPagination<RestaurantModel>> snapshot) {
             if (!snapshot.hasData) {
               return Container();
             }
             return ListView.separated(
                 itemBuilder: (_, idx) {
                   final RestaurantModel item =
-                      snapshot.data![idx];
+                      snapshot.data!.data[idx];
 
                   return GestureDetector(
                     onTap: () {
@@ -66,7 +67,7 @@ class _RestaurantScreenState extends ConsumerState<RestaurantScreen> {
                     height: 40,
                   );
                 },
-                itemCount: snapshot.data!.length);
+                itemCount: snapshot.data!.data.length);
           },
         ),
       ),

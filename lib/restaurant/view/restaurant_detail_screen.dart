@@ -25,18 +25,14 @@ class RestaurantDetailScreen extends ConsumerStatefulWidget {
 }
 
 class _RestaurantDetailScreenState extends ConsumerState<RestaurantDetailScreen> {
-  Future<RestaurantDetailModel> getRestaurantDetail() async {
-    final dio = ref.watch(dioProvider);
-    final repository = RestaurantRepository(dio, baseUrl: '$IP/restaurant');
-    return repository.getRestaurantDetail(id: widget.id);
-  }
+
 
   @override
   Widget build(BuildContext context) {
     return DefaultLayout(
         title: widget.title,
         child: FutureBuilder(
-          future: getRestaurantDetail(),
+          future: ref.watch(restaurantRepositoryProvider).getRestaurantDetail(id: widget.id),
           builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
             if (!snapshot.hasData) {
               return const Center(
