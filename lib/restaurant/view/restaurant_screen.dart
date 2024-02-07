@@ -5,6 +5,7 @@ import 'package:flutter_deep_dive/common/dio/dio.dart';
 import 'package:flutter_deep_dive/common/models/cursor_pagination_model.dart';
 import 'package:flutter_deep_dive/restaurant/components/restaurant_card.dart';
 import 'package:flutter_deep_dive/restaurant/models/restaurant_model.dart';
+import 'package:flutter_deep_dive/restaurant/providers/retaurant_provider.dart';
 import 'package:flutter_deep_dive/restaurant/repository/restaurant_repository.dart';
 import 'package:flutter_deep_dive/restaurant/view/restaurant_detail_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -18,58 +19,56 @@ class RestaurantScreen extends ConsumerStatefulWidget {
 
 class _RestaurantScreenState extends ConsumerState<RestaurantScreen> {
   Future<List<RestaurantModel>> getRestaurant() async {
-
     final dio = ref.watch(dioProvider);
-    final resp = await RestaurantRepository(dio, baseUrl: '$IP/restaurant').getRestaurants();
+    final resp = await RestaurantRepository(dio, baseUrl: '$IP/restaurant')
+        .getRestaurants();
     print(resp);
     return resp.data;
-
   }
-@override
+
+  @override
   void initState() {
     // TODO: implement initState
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
+    final state = ref.watch(restaurantProvider);
+    if (state.length == 0) {
+      return Center(
+        child: CircularProgressIndicator.adaptive(),
+      );
+    }
     return Center(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: FutureBuilder<CursorPagination<RestaurantModel>>(
-          future: ref.watch(restaurantRepositoryProvider).getRestaurants(),
-          builder: (context, AsyncSnapshot<CursorPagination<RestaurantModel>> snapshot) {
-            if (!snapshot.hasData) {
-              return Container();
-            }
-            return ListView.separated(
-                itemBuilder: (_, idx) {
-                  final RestaurantModel item =
-                      snapshot.data!.data[idx];
+        child: ListView.separated(
+            itemBuilder: (_, idx) {
+              final RestaurantModel item = state[idx];
 
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (builder) => RestaurantDetailScreen(
-                            id: item.id,
-                            title: item.name,
-                          ),
-                        ),
-                      );
-                    },
-                    child: RestaurantCard.fromModel(
-                      model: item,
+              return GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (builder) => RestaurantDetailScreen(
+                        id: item.id,
+                        title: item.name,
+                      ),
                     ),
                   );
                 },
-                separatorBuilder: (_, idx) {
-                  return Divider(
-                    height: 40,
-                  );
-                },
-                itemCount: snapshot.data!.data.length);
-          },
-        ),
+                child: RestaurantCard.fromModel(
+                  model: item,
+                ),
+              );
+            },
+            separatorBuilder: (_, idx) {
+              return Divider(
+                height: 40,
+              );
+            },
+            itemCount: state.length),
       ),
     );
   }
