@@ -22,6 +22,7 @@ class RestaurantStateNotifier
 
   getRestaurant() async {
     final resp = await repo.getRestaurants();
+
     state = resp.data;
   }
 }
