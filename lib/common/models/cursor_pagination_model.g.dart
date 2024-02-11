@@ -28,12 +28,12 @@ CursorPaginationMeta _$CursorPaginationMetaFromJson(
         Map<String, dynamic> json) =>
     CursorPaginationMeta(
       count: json['count'] as int,
-      isNotLast: json['isNotLast'] as bool?,
+      hasMore: json['hasMore'] as bool?,
     );
 
 Map<String, dynamic> _$CursorPaginationMetaToJson(
         CursorPaginationMeta instance) =>
     <String, dynamic>{
       'count': instance.count,
-      'isNotLast': instance.isNotLast,
+      'hasMore': instance.hasMore,
     };

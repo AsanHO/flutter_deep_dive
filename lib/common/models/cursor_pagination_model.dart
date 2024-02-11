@@ -13,7 +13,7 @@ class CursorPaginationError extends CursorPaginationBase {
 class CursorPaginationLoading extends CursorPaginationBase {}
 
 //새로고침을 했을 때 CursorPagination 상속
-class CursorPaginationRefetching extends CursorPagination {
+class CursorPaginationRefetching<T> extends CursorPagination {
   CursorPaginationRefetching({
     required super.data,
     required super.meta,
@@ -21,7 +21,7 @@ class CursorPaginationRefetching extends CursorPagination {
 }
 
 //추가 페이지 요청,
-class CursorPaginationFetchingMore extends CursorPagination {
+class CursorPaginationFetchingMore<T> extends CursorPagination {
   CursorPaginationFetchingMore({
     required super.data,
     required super.meta,
@@ -38,6 +38,13 @@ class CursorPagination<T> extends CursorPaginationBase {
     required this.data,
   });
 
+  CursorPagination copyWith({CursorPaginationMeta? meta, List<T>? data}) {
+    return CursorPagination(
+      meta: meta ?? this.meta,
+      data: data ?? this.data,
+    );
+  }
+
   factory CursorPagination.fromJson(
           Map<String, dynamic> json, T Function(Object? json) fromJsonT) =>
       _$CursorPaginationFromJson(json, fromJsonT);
@@ -46,12 +53,19 @@ class CursorPagination<T> extends CursorPaginationBase {
 @JsonSerializable()
 class CursorPaginationMeta {
   final int count;
-  final bool? isNotLast;
+  final bool? hasMore;
 
   CursorPaginationMeta({
     required this.count,
-    required this.isNotLast,
+    required this.hasMore,
   });
+
+  CursorPaginationMeta copyWith(int? count, bool? isNotLast) {
+    return CursorPaginationMeta(
+      count: count ?? this.count,
+      hasMore: isNotLast ?? this.hasMore,
+    );
+  }
 
   factory CursorPaginationMeta.fromJson(Map<String, dynamic> json) =>
       _$CursorPaginationMetaFromJson(json);
