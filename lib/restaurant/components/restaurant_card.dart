@@ -13,6 +13,7 @@ class RestaurantCard extends StatelessWidget {
   final double ratings;
   final bool isDetail;
   final String? detail;
+  final String? heroKey;
 
   const RestaurantCard({
     required this.image,
@@ -24,11 +25,14 @@ class RestaurantCard extends StatelessWidget {
     required this.ratings,
     this.isDetail = false,
     this.detail,
+    this.heroKey,
     Key? key,
   }) : super(key: key);
 
-  factory RestaurantCard.fromModel({required RestaurantModel model,bool isDetail = false}) {
+  factory RestaurantCard.fromModel(
+      {required RestaurantModel model, bool isDetail = false}) {
     return RestaurantCard(
+      heroKey: model.id,
       image: Image.network(model.thumbUrl),
       name: model.name,
       tags: model.tags,
@@ -37,7 +41,7 @@ class RestaurantCard extends StatelessWidget {
       deliveryFee: model.deliveryFee,
       ratings: model.ratings,
       isDetail: isDetail,
-      detail: model is RestaurantDetailModel ?model.detail:null,
+      detail: model is RestaurantDetailModel ? model.detail : null,
     );
   }
 
@@ -45,15 +49,16 @@ class RestaurantCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        if (isDetail) image,
-        if (!isDetail)
-          ClipRRect(
-            borderRadius: BorderRadius.circular(12.0),
+        Hero(
+          tag: ObjectKey(heroKey),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(isDetail ? 0 : 12.0),
             child: image,
           ),
+        ),
         const SizedBox(height: 16.0),
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: isDetail ? 16:0),
+          padding: EdgeInsets.symmetric(horizontal: isDetail ? 16 : 0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -95,7 +100,7 @@ class RestaurantCard extends StatelessWidget {
                   ),
                 ],
               ),
-              if(detail != null && isDetail)
+              if (detail != null && isDetail)
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 16.0),
                   child: Text(detail!),
