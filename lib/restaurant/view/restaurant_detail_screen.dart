@@ -9,6 +9,7 @@ import 'package:flutter_deep_dive/restaurant/models/restaurant_model.dart';
 import 'package:flutter_deep_dive/restaurant/providers/retaurant_provider.dart';
 import 'package:flutter_deep_dive/restaurant/repository/restaurant_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skeletons/skeletons.dart';
 
 import '../../common/dio/dio.dart';
 
@@ -53,13 +54,37 @@ print(state);
             renderTop(
               model: state!,
             ),
-            renderLabel(),
+            if (state is! RestaurantDetailModel) renderLoading(),
+            if (state is RestaurantDetailModel)  renderLabel(),
             if (state is RestaurantDetailModel) 
               renderProducts(model: state)
           ],
         ));
   }
-
+  SliverPadding renderLoading() {
+    return SliverPadding(
+      padding: EdgeInsets.symmetric(
+        vertical: 16.0,
+        horizontal: 16.0,
+      ),
+      sliver: SliverList(
+        delegate: SliverChildListDelegate(
+          List.generate(
+            3,
+                (index) => Padding(
+              padding: const EdgeInsets.only(bottom: 32.0),
+              child: SkeletonParagraph(
+                style: SkeletonParagraphStyle(
+                  lines: 5,
+                  padding: EdgeInsets.zero,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
   SliverToBoxAdapter renderTop({
     required RestaurantModel model,
   }) {
