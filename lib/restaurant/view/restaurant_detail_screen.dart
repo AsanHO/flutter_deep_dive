@@ -5,6 +5,8 @@ import 'package:flutter_deep_dive/common/layout/default_layout.dart';
 import 'package:flutter_deep_dive/product/components/product_card.dart';
 import 'package:flutter_deep_dive/restaurant/components/restaurant_card.dart';
 import 'package:flutter_deep_dive/restaurant/models/restaurant_detail_model.dart';
+import 'package:flutter_deep_dive/restaurant/models/restaurant_model.dart';
+import 'package:flutter_deep_dive/restaurant/providers/retaurant_provider.dart';
 import 'package:flutter_deep_dive/restaurant/repository/restaurant_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -21,40 +23,37 @@ class RestaurantDetailScreen extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<RestaurantDetailScreen> createState() => _RestaurantDetailScreenState();
+  ConsumerState<RestaurantDetailScreen> createState() =>
+      _RestaurantDetailScreenState();
 }
 
-class _RestaurantDetailScreenState extends ConsumerState<RestaurantDetailScreen> {
-
-
+class _RestaurantDetailScreenState
+    extends ConsumerState<RestaurantDetailScreen> {
   @override
   Widget build(BuildContext context) {
+    final state = ref.watch(restaurantDetailProvider(widget.id));
+
+    if (state == null) {
+      DefaultLayout(
+        child: Center(
+          child: CircularProgressIndicator.adaptive(),
+        ),
+      );
+    }
     return DefaultLayout(
         title: widget.title,
-        child: FutureBuilder(
-          future: ref.watch(restaurantRepositoryProvider).getRestaurantDetail(id: widget.id),
-          builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-            if (!snapshot.hasData) {
-              return const Center(
-                child: CircularProgressIndicator.adaptive(),
-              );
-            }
-            final item = snapshot.data;
-            return CustomScrollView(
-              slivers: [
-                renderTop(
-                  model: item,
-                ),
-                renderLabel(),
-                renderProducts(model: item),
-              ],
-            );
-          },
+        child: CustomScrollView(
+          slivers: [
+            renderTop(
+              model: state!,
+            ),
+            renderLabel()
+          ],
         ));
   }
 
   SliverToBoxAdapter renderTop({
-    required RestaurantDetailModel model,
+    required RestaurantModel model,
   }) {
     return SliverToBoxAdapter(
       child: RestaurantCard.fromModel(

@@ -4,6 +4,15 @@ import 'package:flutter_deep_dive/restaurant/models/restaurant_model.dart';
 import 'package:flutter_deep_dive/restaurant/repository/restaurant_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+final restaurantDetailProvider = Provider.family<RestaurantModel?,String>((ref,id){
+  final state = ref.watch(restaurantProvider);
+  if (state is CursorPagination<RestaurantModel>){
+    return state.data.firstWhere((element) => element.id == id);
+  }
+  return null;
+});
+
+
 final restaurantProvider =
     StateNotifierProvider<RestaurantStateNotifier, CursorPaginationBase>(
   (ref) {
