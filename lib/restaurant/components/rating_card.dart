@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_deep_dive/common/const/colors.dart';
+import 'package:collection/collection.dart';
 
 class RatingCard extends StatelessWidget {
   final ImageProvider avatarImage;
@@ -26,8 +27,11 @@ class RatingCard extends StatelessWidget {
           email: email,
           rating: rating,
         ),
-        _Body(),
-        _Images(),
+        _Body(
+          content: content,
+        ),
+        if(images.isNotEmpty)
+        SizedBox(height: 100,child: _Images(images: images,)),
       ],
     );
   }
@@ -77,19 +81,39 @@ class _Header extends StatelessWidget {
 }
 
 class _Body extends StatelessWidget {
-  const _Body({super.key});
+  final String content;
+
+  const _Body({super.key, required this.content});
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Row(
+      children: [
+        Expanded(child: Text(content)), // Expanded해줘야 알아서 줄바꿈
+      ],
+    );
   }
 }
 
 class _Images extends StatelessWidget {
-  const _Images({super.key});
+  final List<Image> images;
+
+  const _Images({super.key, required this.images});
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return ListView(
+      scrollDirection: Axis.horizontal,
+      children: images
+          .mapIndexed(
+            (idx, e) => Padding(
+              padding:
+                  EdgeInsets.only(right: idx == images.length - 1 ? 0 : 16),
+              child:
+                  ClipRRect(borderRadius: BorderRadius.circular(8), child: e),
+            ),
+          )
+          .toList(),
+    );
   }
 }
