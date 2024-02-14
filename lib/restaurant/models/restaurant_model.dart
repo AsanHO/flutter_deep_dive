@@ -1,4 +1,5 @@
 import 'package:flutter_deep_dive/common/const/environments.dart';
+import 'package:flutter_deep_dive/common/models/model_with_id.dart';
 import 'package:flutter_deep_dive/common/utils/data_utils.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -10,7 +11,7 @@ enum RestaurantPriceRange {
 }
 
 @JsonSerializable()
-class RestaurantModel {
+class RestaurantModel implements IModelWithId{
   final String id;
   final String name;
   @JsonKey(

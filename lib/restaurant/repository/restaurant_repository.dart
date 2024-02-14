@@ -3,6 +3,7 @@ import 'package:flutter_deep_dive/common/const/environments.dart';
 import 'package:flutter_deep_dive/common/dio/dio.dart';
 import 'package:flutter_deep_dive/common/models/cursor_pagination_model.dart';
 import 'package:flutter_deep_dive/common/models/pagination_params.dart';
+import 'package:flutter_deep_dive/common/repository/base_pagination_repository.dart';
 import 'package:flutter_deep_dive/restaurant/models/restaurant_detail_model.dart';
 import 'package:flutter_deep_dive/restaurant/models/restaurant_model.dart';
 import 'package:retrofit/retrofit.dart';
@@ -17,15 +18,16 @@ final restaurantRepositoryProvider = Provider<RestaurantRepository>((ref) {
 });
 
 @RestApi()
-abstract class RestaurantRepository {
+abstract class RestaurantRepository implements IBasePaginationRepository{
   factory RestaurantRepository(Dio dio, {String baseUrl}) =
       _RestaurantRepository;
 
+  @override
   @GET('/')
   @Headers({
     'accessToken': 'true',
   })
-  Future<CursorPagination<RestaurantModel>> getRestaurants({
+  Future<CursorPagination<RestaurantModel>> paginate({
     @Queries() PaginationParams? paginationParams = const PaginationParams(),
   });
 
