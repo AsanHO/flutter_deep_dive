@@ -23,7 +23,7 @@ class _RestaurantScreenState extends ConsumerState<RestaurantScreen> {
   Future<List<RestaurantModel>> getRestaurant() async {
     final dio = ref.watch(dioProvider);
     final resp = await RestaurantRepository(dio, baseUrl: '$IP/restaurant')
-        .getRestaurants();
+        .paginate();
     print(resp);
     return resp.data;
   }
