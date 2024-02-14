@@ -7,6 +7,7 @@ import 'package:flutter_deep_dive/restaurant/components/rating_card.dart';
 import 'package:flutter_deep_dive/restaurant/components/restaurant_card.dart';
 import 'package:flutter_deep_dive/restaurant/models/restaurant_detail_model.dart';
 import 'package:flutter_deep_dive/restaurant/models/restaurant_model.dart';
+import 'package:flutter_deep_dive/restaurant/providers/restaurant_rating_provider.dart';
 import 'package:flutter_deep_dive/restaurant/providers/retaurant_provider.dart';
 import 'package:flutter_deep_dive/restaurant/repository/restaurant_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -40,7 +41,9 @@ class _RestaurantDetailScreenState
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(restaurantDetailProvider(widget.id));
+    final ratingsState = ref.watch(restaurantRatingProvider(widget.id));
     print(state);
+    print(ratingsState);
     if (state == null) {
       DefaultLayout(
         child: Center(
