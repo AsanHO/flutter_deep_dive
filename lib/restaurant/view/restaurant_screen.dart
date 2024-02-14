@@ -35,7 +35,7 @@ class _RestaurantScreenState extends ConsumerState<RestaurantScreen> {
     scrollController.addListener(() {
       if (scrollController.offset >
           scrollController.position.maxScrollExtent - 300) {
-        ref.read(restaurantProvider.notifier).getRestaurant(fetchMore: true);
+        ref.read(restaurantProvider.notifier).paginate(fetchMore: true);
       }
     });
   }

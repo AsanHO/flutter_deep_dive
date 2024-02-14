@@ -22,6 +22,12 @@ abstract class RestaurantRepository implements IBasePaginationRepository{
   factory RestaurantRepository(Dio dio, {String baseUrl}) =
       _RestaurantRepository;
 
+  ///일반화 했기 때문에 자동완성 paginate에 대해 지원됨
+  // @override
+  // Future<CursorPagination<IModelWithId>> paginate({PaginationParams? paginationParams = const PaginationParams()}) {
+  //   // TODO: implement paginate
+  //   throw UnimplementedError();
+  // }
   @override
   @GET('/')
   @Headers({

@@ -4,17 +4,20 @@ import 'package:flutter_deep_dive/common/models/pagination_params.dart';
 import 'package:flutter_deep_dive/common/repository/base_pagination_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class PaginationProvider<T extends IModelWithId, R extends IBasePaginationRepository> extends StateNotifier<CursorPaginationBase> {
+class PaginationProvider<T extends IModelWithId,
+        R extends IBasePaginationRepository>
+    extends StateNotifier<CursorPaginationBase> {
   final R repository;
-
 
   PaginationProvider({
     required this.repository,
   }) : super(
           CursorPaginationLoading(),
-        );
+        ) {
+    paginate();
+  }
 
-  Future<void> getItems({
+  Future<void> paginate({
     int fetchAmount = 20,
     bool fetchMore = false,
     bool isReFetch = false,
