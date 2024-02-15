@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_deep_dive/common/const/environments.dart';
 import 'package:flutter_deep_dive/common/dio/dio.dart';
 import 'package:flutter_deep_dive/common/models/cursor_pagination_model.dart';
+import 'package:flutter_deep_dive/common/utils/pagination_util.dart';
 import 'package:flutter_deep_dive/restaurant/components/restaurant_card.dart';
 import 'package:flutter_deep_dive/restaurant/models/restaurant_model.dart';
 import 'package:flutter_deep_dive/restaurant/providers/retaurant_provider.dart';
@@ -22,8 +23,8 @@ class _RestaurantScreenState extends ConsumerState<RestaurantScreen> {
 
   Future<List<RestaurantModel>> getRestaurant() async {
     final dio = ref.watch(dioProvider);
-    final resp = await RestaurantRepository(dio, baseUrl: '$IP/restaurant')
-        .paginate();
+    final resp =
+        await RestaurantRepository(dio, baseUrl: '$IP/restaurant').paginate();
     print(resp);
     return resp.data;
   }
@@ -32,12 +33,14 @@ class _RestaurantScreenState extends ConsumerState<RestaurantScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    scrollController.addListener(() {
-      if (scrollController.offset >
-          scrollController.position.maxScrollExtent - 300) {
-        ref.read(restaurantProvider.notifier).paginate(fetchMore: true);
-      }
-    });
+    scrollController.addListener(
+      () {
+        PaginationUtil.paginate(
+          scrollController: scrollController,
+          provider: ref.read(restaurantProvider.notifier),
+        );
+      },
+    );
   }
 
   @override
@@ -45,7 +48,7 @@ class _RestaurantScreenState extends ConsumerState<RestaurantScreen> {
     final state = ref.watch(restaurantProvider);
 
     if (state is CursorPaginationLoading) {
-      return Center(
+      return const Center(
         child: CircularProgressIndicator.adaptive(),
       );
     }

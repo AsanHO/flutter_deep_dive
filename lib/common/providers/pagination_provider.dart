@@ -18,7 +18,7 @@ class PaginationProvider<T extends IModelWithId,
   }
 
   Future<void> paginate({
-    int fetchAmount = 5,
+    int fetchAmount = 20,
     bool fetchMore = false,
     bool isReFetch = false,
   }) async {

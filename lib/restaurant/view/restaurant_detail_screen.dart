@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_deep_dive/common/const/environments.dart';
 import 'package:flutter_deep_dive/common/layout/default_layout.dart';
 import 'package:flutter_deep_dive/common/models/cursor_pagination_model.dart';
+import 'package:flutter_deep_dive/common/utils/pagination_util.dart';
 import 'package:flutter_deep_dive/product/components/product_card.dart';
 import 'package:flutter_deep_dive/restaurant/components/rating_card.dart';
 import 'package:flutter_deep_dive/restaurant/components/restaurant_card.dart';
@@ -34,10 +35,20 @@ class RestaurantDetailScreen extends ConsumerStatefulWidget {
 
 class _RestaurantDetailScreenState
     extends ConsumerState<RestaurantDetailScreen> {
+  final ScrollController scrollController = ScrollController();
+
   @override
   void initState() {
-    ref.read(restaurantProvider.notifier).getRestaurantDetail(id: widget.id);
     super.initState();
+    ref.read(restaurantProvider.notifier).getRestaurantDetail(id: widget.id);
+    scrollController.addListener(
+          () {
+        PaginationUtil.paginate(
+          scrollController: scrollController,
+          provider: ref.read(restaurantRatingProvider(widget.id).notifier),
+        );
+      },
+    );
   }
 
   @override
@@ -55,6 +66,7 @@ class _RestaurantDetailScreenState
     return DefaultLayout(
         title: widget.title,
         child: CustomScrollView(
+          controller: scrollController,
           slivers: [
             renderTop(
               model: state!,
@@ -62,7 +74,6 @@ class _RestaurantDetailScreenState
             if (state is! RestaurantDetailModel) renderLoading(),
             if (state is RestaurantDetailModel) renderLabel(),
             if (state is RestaurantDetailModel) renderProducts(model: state),
-
             if (ratingsState is CursorPagination<RatingModel>)
               renderRatings(models: ratingsState.data)
           ],
@@ -71,17 +82,16 @@ class _RestaurantDetailScreenState
 
   SliverPadding renderRatings({required List<RatingModel> models}) {
     return SliverPadding(
-      padding: EdgeInsets.symmetric(horizontal: 16,vertical: 30),
+      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 30),
       sliver: SliverList(
         delegate: SliverChildBuilderDelegate(
-          (context, index) => Padding(
-            padding: const EdgeInsets.only(bottom: 30),
-            child: RatingCard.fromModel(
-              model: models[index],
-            ),
-          ),
-          childCount: models.length
-        ),
+            (context, index) => Padding(
+                  padding: const EdgeInsets.only(bottom: 30),
+                  child: RatingCard.fromModel(
+                    model: models[index],
+                  ),
+                ),
+            childCount: models.length),
       ),
     );
   }
