@@ -5,7 +5,7 @@ import 'package:flutter_deep_dive/common/repository/base_pagination_repository.d
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class PaginationProvider<T extends IModelWithId,
-        R extends IBasePaginationRepository>
+        R extends IBasePaginationRepository<T>>
     extends StateNotifier<CursorPaginationBase> {
   final R repository;
 
@@ -18,7 +18,7 @@ class PaginationProvider<T extends IModelWithId,
   }
 
   Future<void> paginate({
-    int fetchAmount = 20,
+    int fetchAmount = 5,
     bool fetchMore = false,
     bool isReFetch = false,
   }) async {
@@ -72,7 +72,7 @@ class PaginationProvider<T extends IModelWithId,
           await repository.paginate(paginationParams: paginationParams);
 
       if (state is CursorPaginationFetchingMore) {
-        final pState = state as CursorPaginationFetchingMore<T>;
+        final pState = state as CursorPaginationFetchingMore;
 
         state = resp.copyWith(data: [
           ...pState.data,
@@ -82,6 +82,7 @@ class PaginationProvider<T extends IModelWithId,
         state = resp;
       }
     } catch (e,stack) {
+      print(e);
       print(stack);
       state = CursorPaginationError(message: '데이터를 가져오지 못했어요 ㅜ');
     }
