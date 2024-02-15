@@ -72,7 +72,7 @@ class PaginationProvider<T extends IModelWithId,
           await repository.paginate(paginationParams: paginationParams);
 
       if (state is CursorPaginationFetchingMore) {
-        final pState = state as CursorPaginationFetchingMore;
+        final pState = state as CursorPaginationFetchingMore<T>;
 
         state = resp.copyWith(data: [
           ...pState.data,
@@ -81,7 +81,8 @@ class PaginationProvider<T extends IModelWithId,
       } else {
         state = resp;
       }
-    } catch (e) {
+    } catch (e,stack) {
+      print(stack);
       state = CursorPaginationError(message: '데이터를 가져오지 못했어요 ㅜ');
     }
   }

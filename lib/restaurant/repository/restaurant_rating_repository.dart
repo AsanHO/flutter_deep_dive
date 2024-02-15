@@ -15,7 +15,7 @@ final restaurantRatingRepositoryProvider = Provider.family<RestaurantRatingRepos
   return RestaurantRatingRepository(dio,baseUrl: '$IP/restaurant/$id/rating');
 });
 @RestApi()
-abstract class RestaurantRatingRepository implements IBasePaginationRepository {
+abstract class RestaurantRatingRepository implements IBasePaginationRepository<RatingModel> {
   factory RestaurantRatingRepository(Dio dio, {String baseUrl}) =
       _RestaurantRatingRepository;
 
