@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_deep_dive/common/const/colors.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter_deep_dive/restaurant/models/rating_model.dart';
 
 class RatingCard extends StatelessWidget {
   final ImageProvider avatarImage;
@@ -18,6 +19,16 @@ class RatingCard extends StatelessWidget {
     required this.content,
   });
 
+  factory RatingCard.fromModel({required RatingModel model}) {
+    return RatingCard(
+      avatarImage: NetworkImage(model.user.imageUrl),
+      images: model.imgUrls.map((e) => Image.network(e)).toList(),
+      rating: model.rating,
+      email: model.user.username,
+      content: model.content,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -30,8 +41,12 @@ class RatingCard extends StatelessWidget {
         _Body(
           content: content,
         ),
-        if(images.isNotEmpty)
-        SizedBox(height: 100,child: _Images(images: images,)),
+        if (images.isNotEmpty)
+          SizedBox(
+              height: 100,
+              child: _Images(
+                images: images,
+              )),
       ],
     );
   }
@@ -54,17 +69,19 @@ class _Header extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Row(
-          children: [
-            CircleAvatar(
-              radius: 12,
-              backgroundImage: avatarImage,
-            ),
-            SizedBox(
-              width: 10,
-            ),
-            Text(email),
-          ],
+        Expanded(
+          child: Row(
+            children: [
+              CircleAvatar(
+                radius: 12,
+                backgroundImage: avatarImage,
+              ),
+              SizedBox(
+                width: 10,
+              ),
+              Expanded(child: Text(email,overflow: TextOverflow.ellipsis,)),
+            ],
+          ),
         ),
         Row(
           children: List.generate(
