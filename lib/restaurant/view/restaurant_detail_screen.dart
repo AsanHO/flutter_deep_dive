@@ -1,6 +1,4 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_deep_dive/common/const/environments.dart';
 import 'package:flutter_deep_dive/common/layout/default_layout.dart';
 import 'package:flutter_deep_dive/common/models/cursor_pagination_model.dart';
 import 'package:flutter_deep_dive/common/utils/pagination_util.dart';
@@ -12,7 +10,6 @@ import 'package:flutter_deep_dive/restaurant/models/restaurant_detail_model.dart
 import 'package:flutter_deep_dive/restaurant/models/restaurant_model.dart';
 import 'package:flutter_deep_dive/restaurant/providers/restaurant_rating_provider.dart';
 import 'package:flutter_deep_dive/restaurant/providers/retaurant_provider.dart';
-import 'package:flutter_deep_dive/restaurant/repository/restaurant_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skeletons/skeletons.dart';
 
@@ -155,7 +152,7 @@ class _RestaurantDetailScreenState
           (context, index) {
             return Padding(
               padding: const EdgeInsets.only(top: 16.0),
-              child: ProductCard(model: model.products[index]),
+              child: ProductCard.fromRestaurantProductModel(model: model.products[index]),
             );
           },
           childCount: model.products.length,
