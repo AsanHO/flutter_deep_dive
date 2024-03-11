@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_deep_dive/route/router.dart';
 
 void main() {
   runApp(
@@ -11,11 +12,8 @@ class _App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        body: Container(),
-      ),
+    return MaterialApp.router(
+      routerConfig: router,
     );
   }
 }
