@@ -14,7 +14,10 @@ class RootScreen extends StatelessWidget {
               onPressed: () => context.go('/basic'), child: Text('gobasic')),
           ElevatedButton(
               onPressed: () => context.goNamed('named_screen'),
-              child: Text('gonamedbasic'))
+              child: Text('gonamedbasic')),
+          ElevatedButton(
+              onPressed: () => context.go('/push'),
+              child: Text('pushBasic'))
         ],
       ),
     );
