@@ -10,6 +10,8 @@ import 'package:flutter_deep_dive/common/view/root_tab.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class LoginScreen extends StatefulWidget {
+  static String  get routeName =>'login';
+
   const LoginScreen({super.key});
 
   @override

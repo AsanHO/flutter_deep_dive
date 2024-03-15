@@ -19,6 +19,8 @@ class RestaurantDetailScreen extends ConsumerStatefulWidget {
   final String id;
   final String title;
 
+  static String get routeName => 'restaurant_detail';
+
   const RestaurantDetailScreen({
     super.key,
     required this.id,
@@ -39,7 +41,7 @@ class _RestaurantDetailScreenState
     super.initState();
     ref.read(restaurantProvider.notifier).getRestaurantDetail(id: widget.id);
     scrollController.addListener(
-          () {
+      () {
         PaginationUtil.paginate(
           scrollController: scrollController,
           provider: ref.read(restaurantRatingProvider(widget.id).notifier),
@@ -152,7 +154,8 @@ class _RestaurantDetailScreenState
           (context, index) {
             return Padding(
               padding: const EdgeInsets.only(top: 16.0),
-              child: ProductCard.fromRestaurantProductModel(model: model.products[index]),
+              child: ProductCard.fromRestaurantProductModel(
+                  model: model.products[index]),
             );
           },
           childCount: model.products.length,

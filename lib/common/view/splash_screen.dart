@@ -5,62 +5,14 @@ import 'package:flutter_deep_dive/common/const/environments.dart';
 import 'package:flutter_deep_dive/common/layout/default_layout.dart';
 import 'package:flutter_deep_dive/common/view/root_tab.dart';
 import 'package:flutter_deep_dive/user/view/login_screen.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class SplashScreen extends StatefulWidget {
+class SplashScreen extends ConsumerWidget {
+  static String get routeName => 'splash';
   const SplashScreen({Key? key}) : super(key: key);
 
   @override
-  State<SplashScreen> createState() => _SplashScreenState();
-}
-
-class _SplashScreenState extends State<SplashScreen> {
-  @override
-  void initState() {
-    super.initState();
-
-    // deleteToken();
-    checkToken();
-  }
-
-  void deleteToken() async {
-    await storage.deleteAll();
-  }
-
-  void checkToken() async {
-    final refreshToken = await storage.read(key: REFRESH_TOKEN_KEY);
-    final accessToken = await storage.read(key: ACCESS_TOKEN_KEY);
-
-    final dio = Dio();
-    try{
-      final resp = await dio.post(
-        '$IP/auth/token',
-        options: Options(
-          headers: {
-            'authorization': 'Bearer $refreshToken',
-          },
-        ),
-      );
-
-      await storage.write(key: ACCESS_TOKEN_KEY, value: resp.data['accessToken']);
-
-      Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(
-          builder: (_) => RootTab(),
-        ),
-            (route) => false,
-      );
-    }catch(e){
-      Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(
-          builder: (_) => LoginScreen(),
-        ),
-            (route) => false,
-      );
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context,WidgetRef ref) {
     return DefaultLayout(
       backgroundColor: PRIMARY_COLOR,
       child: SizedBox(
