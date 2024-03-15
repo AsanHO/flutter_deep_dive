@@ -10,6 +10,17 @@ import 'package:flutter_deep_dive/user/repository/user_me_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
+final userMeProvider = StateNotifierProvider<UserMeStateNotifier,UserModelBase?>((ref) {
+  final authRepository = ref.watch(authRepositoryProvider);
+  final userMeRepository = ref.watch(userMeRepositoryProvider);
+
+  return UserMeStateNotifier(
+    repository: userMeRepository,
+    storage: storage,
+    authRepository: authRepository,
+  );
+});
+
 class UserMeStateNotifier extends StateNotifier<UserModelBase?> {
   final AuthRepository authRepository;
   final UserMeRepository repository;

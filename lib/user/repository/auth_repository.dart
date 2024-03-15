@@ -2,8 +2,15 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_deep_dive/common/const/environments.dart';
+import 'package:flutter_deep_dive/common/dio/dio.dart';
 import 'package:flutter_deep_dive/common/models/login_response.dart';
 import 'package:flutter_deep_dive/common/models/token_response.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+final authRepositoryProvider = Provider<AuthRepository>((ref) {
+  final dio = ref.watch(dioProvider);
+  return AuthRepository(baseUrl: IP, dio: dio);
+});
 
 class AuthRepository {
   final String baseUrl;
