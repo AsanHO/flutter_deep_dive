@@ -7,18 +7,20 @@ import 'package:flutter_deep_dive/common/const/colors.dart';
 import 'package:flutter_deep_dive/common/const/environments.dart';
 import 'package:flutter_deep_dive/common/layout/default_layout.dart';
 import 'package:flutter_deep_dive/common/view/root_tab.dart';
+import 'package:flutter_deep_dive/user/provider/user_me_provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-class LoginScreen extends StatefulWidget {
+class LoginScreen extends ConsumerStatefulWidget {
   static String  get routeName =>'login';
 
   const LoginScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  ConsumerState<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends ConsumerState<LoginScreen> {
   final dio = Dio();
   final secureStorage = FlutterSecureStorage();
   String email = '';
@@ -72,24 +74,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 ElevatedButton(
                   onPressed: () async {
-                    Codec<String, String> stringToBase64 = utf8.fuse(base64);
-
-                    String token = stringToBase64.encode('$email:$password');
-
-                    final resp = await dio.post(
-                      "$IP/auth/login",
-                      options: Options(
-                        headers: {'authorization': 'Basic $token'},
-                      ),
-                    );
-                    print(resp.data);
-                    final aToken = resp.data['accessToken'];
-                    final rToken = resp.data['refreshToken'];
-
-                    await secureStorage.write(key: ACCESS_TOKEN_KEY, value: aToken);
-                    await secureStorage.write(key: REFRESH_TOKEN_KEY, value: rToken);
-                    Navigator.of(context)
-                        .push(MaterialPageRoute(builder: (_) => const RootTab()));
+                    await ref.read(userMeProvider.notifier).login(email: email, password: password);
 
                   },
                   child: Text("로그인"),

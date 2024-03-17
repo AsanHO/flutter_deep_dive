@@ -33,7 +33,7 @@ class _UserMeRepository implements UserMeRepository {
     )
             .compose(
               _dio.options,
-              '/',
+              '/user/me',
               queryParameters: queryParameters,
               data: _data,
             )

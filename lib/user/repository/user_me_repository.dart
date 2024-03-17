@@ -17,7 +17,7 @@ final userMeRepositoryProvider = Provider<UserMeRepository>((ref) {
 abstract class UserMeRepository {
   factory UserMeRepository(Dio dio, {String baseUrl}) = _UserMeRepository;
 
-  @GET('/')
+  @GET('/user/me')
   @Headers({'accessToken': 'true'})
   Future<UserModel> getUser();
 }
