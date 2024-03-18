@@ -36,7 +36,7 @@ class AuthProvider extends ChangeNotifier {
 
     final isLoginIn = routerState.matchedLocation == '/login';
 
-    if (userState is UserModelLoading) {
+    if (userState is UserModelLoading || userState == null) {
       return isLoginIn ? null : '/login';
     }
     if (userState is UserModel) {
