@@ -75,4 +75,8 @@ class AuthProvider extends ChangeNotifier {
           builder: (_, __) => const LoginScreen(),
         )
       ];
+
+  Future<void> logout() async {
+    ref.read(userMeProvider.notifier).logout();
+  }
 }

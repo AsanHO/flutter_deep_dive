@@ -1,12 +1,14 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_deep_dive/common/const/environments.dart';
+import 'package:flutter_deep_dive/user/provider/auth_provider.dart';
+import 'package:flutter_deep_dive/user/provider/user_me_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 final dioProvider = Provider<Dio>((ref) {
   final dio = Dio();
 
-  dio.interceptors.add(CustomInterceptor(storage: storage));
+  dio.interceptors.add(CustomInterceptor(storage: storage, ref: ref));
 
   return dio;
 });
@@ -14,8 +16,9 @@ final dioProvider = Provider<Dio>((ref) {
 
 class CustomInterceptor extends Interceptor {
   final FlutterSecureStorage storage;
+  final Ref ref;
 
-  CustomInterceptor({required this.storage});
+  CustomInterceptor({required this.storage,required this.ref, });
 
   @override
   void onRequest(
@@ -90,6 +93,10 @@ class CustomInterceptor extends Interceptor {
 
         return handler.resolve(response);
       }on DioException catch(e){
+        /// Circular dependency error 재귀 오류
+        /// 2개의 프로바이더가 서로 의존성을 가지면 상위 객체를 만들어야한다.
+        /// 다른 프로바이더에 로그아웃 함수를 만들어주면 된다.
+        ref.read(authProvider.notifier).logout();
         return handler.reject(e);
       }
     }
