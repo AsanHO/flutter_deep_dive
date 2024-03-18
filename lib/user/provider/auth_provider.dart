@@ -36,7 +36,7 @@ class AuthProvider extends ChangeNotifier {
 
     final isLoginIn = routerState.matchedLocation == '/login';
 
-    if (userState is UserModelLoading || userState == null) {
+    if (userState is UserModelLoading) {
       return isLoginIn ? null : '/login';
     }
     if (userState is UserModel) {
@@ -55,10 +55,10 @@ class AuthProvider extends ChangeNotifier {
           builder: (_, __) => const RootTab(),
           routes: [
             GoRoute(
-              path: 'restaurant/:rid',
+              path: 'restaurant/:id',
               name: RestaurantDetailScreen.routeName,
               builder: (_, state) => RestaurantDetailScreen(
-                id: state.pathParameters['rid']!,
+                id: state.pathParameters['id']!,
                 title: state.pathParameters['title']!,
               ),
             ),
