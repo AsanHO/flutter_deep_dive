@@ -1,29 +1,36 @@
 import 'package:flutter_deep_dive/product/models/product_model.dart';
 import 'package:flutter_deep_dive/user/models/basket_models.dart';
+import 'package:flutter_deep_dive/user/repository/user_me_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:collection/collection.dart';
+
 final basketProvider =
     StateNotifierProvider<BasketProvider, List<BasketItemModel>>(
-  (ref) => BasketProvider(),
+  (ref) =>
+      BasketProvider(userMeRepository: ref.watch(userMeRepositoryProvider)),
 );
 
 class BasketProvider extends StateNotifier<List<BasketItemModel>> {
-  BasketProvider() : super([]);
+  final UserMeRepository userMeRepository;
 
-  // Future<void> patchBasket() async {
-  //   await repository.patchBasket(
-  //     body: PatchBasketBody(
-  //       basket: state
-  //           .map(
-  //             (e) => PatchBasketBodyBasket(
-  //           productId: e.product.id,
-  //           count: e.count,
-  //         ),
-  //       )
-  //           .toList(),
-  //     ),
-  //   );
-  // }
+  BasketProvider({
+    required this.userMeRepository,
+  }) : super([]);
+
+  Future<void> patchBasket() async {
+    await userMeRepository.patchBasket(
+      body: PatchBasketBodyModel(
+        basket: state
+            .map(
+              (e) => PatchBasketBodyBasketModel(
+            productId: e.product.id,
+            count: e.count,
+          ),
+        )
+            .toList(),
+      ),
+    );
+  }
 
   Future<void> addToBasket({
     required ProductModel product,
@@ -37,7 +44,8 @@ class BasketProvider extends StateNotifier<List<BasketItemModel>> {
     // 2) 만약에 이미 들어있다면
     //    장바구니에 있는 값에 +1을 한다.
 
-    final exists = state.firstWhereOrNull((e) => e.product.id == product.id) != null;
+    final exists =
+        state.firstWhereOrNull((e) => e.product.id == product.id) != null;
     if (exists) {
       state = state
           .map(
@@ -60,6 +68,7 @@ class BasketProvider extends StateNotifier<List<BasketItemModel>> {
 
     // Optimistic Response (긍정적 응답)
     // 응답이 성공할거라고 가정하고 상태를 먼저 업데이트함
+    await patchBasket();
     // updateBasketDebounce.setValue(null);
   }
 
@@ -74,7 +83,8 @@ class BasketProvider extends StateNotifier<List<BasketItemModel>> {
     // 2) 상품이 존재하지 않을때
     //    즉시 함수를 반환하고 아무것도 하지 않는다.
 
-    final exists = state.firstWhereOrNull((e) => e.product.id == product.id) != null;
+    final exists =
+        state.firstWhereOrNull((e) => e.product.id == product.id) != null;
 
     if (!exists) {
       return;
