@@ -110,4 +110,8 @@ class BasketProvider extends StateNotifier<List<BasketItemModel>> {
           .toList();
     }
   }
+  int get totalPrice => state.fold<int>(
+    0,
+        (p, n) => p + (n.product.price * n.count),
+  );
 }

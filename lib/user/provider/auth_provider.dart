@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_deep_dive/common/view/root_tab.dart';
 import 'package:flutter_deep_dive/common/view/root_tab.dart';
 import 'package:flutter_deep_dive/common/view/splash_screen.dart';
+import 'package:flutter_deep_dive/restaurant/view/basket_screen.dart';
 import 'package:flutter_deep_dive/restaurant/view/restaurant_detail_screen.dart';
 import 'package:flutter_deep_dive/restaurant/view/restaurant_detail_screen.dart';
 import 'package:flutter_deep_dive/user/models/user_model.dart';
@@ -64,6 +65,11 @@ class AuthProvider extends ChangeNotifier {
             ),
           ],
         ),
+    GoRoute(
+      path: '/basket',
+      name: BasketScreen.routeName,
+      builder: (_, state) => const BasketScreen(),
+    ),
         GoRoute(
           path: '/splash',
           name: SplashScreen.routeName,
