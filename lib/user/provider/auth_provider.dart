@@ -13,6 +13,8 @@ import 'package:flutter_deep_dive/user/view/login_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../order/views/order_done_screen.dart';
+
 final authProvider =
     ChangeNotifierProvider<AuthProvider>((ref) => AuthProvider(ref: ref));
 
@@ -32,7 +34,7 @@ class AuthProvider extends ChangeNotifier {
 
   // SplashScreen
   // 앱을 처음 시작했을때 토큰 유무에 따라 라우팅해줘야한다.
-  String? redirectLogic(BuildContext context,GoRouterState routerState) {
+  String? redirectLogic(BuildContext context, GoRouterState routerState) {
     final UserModelBase? userState = ref.read(userMeProvider);
 
     final isLoginIn = routerState.matchedLocation == '/login';
@@ -65,11 +67,16 @@ class AuthProvider extends ChangeNotifier {
             ),
           ],
         ),
-    GoRoute(
-      path: '/basket',
-      name: BasketScreen.routeName,
-      builder: (_, state) => const BasketScreen(),
-    ),
+        GoRoute(
+          path: '/order_done',
+          name: OrderDoneScreen.routeName,
+          builder: (_, state) => const OrderDoneScreen(),
+        ),
+        GoRoute(
+          path: '/basket',
+          name: BasketScreen.routeName,
+          builder: (_, state) => const BasketScreen(),
+        ),
         GoRoute(
           path: '/splash',
           name: SplashScreen.routeName,
