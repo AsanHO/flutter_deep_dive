@@ -44,6 +44,7 @@ class OrderProductAndCountModel {
 
 @JsonSerializable()
 class OrderModel implements IModelWithId {
+  @override
   final String id;
   final List<OrderProductAndCountModel> products;
   final int totalPrice;

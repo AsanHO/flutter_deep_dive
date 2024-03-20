@@ -1,4 +1,6 @@
 
+import 'package:flutter_deep_dive/common/models/cursor_pagination_model.dart';
+import 'package:flutter_deep_dive/common/providers/pagination_provider.dart';
 import 'package:flutter_deep_dive/order/model/order_model.dart';
 import 'package:flutter_deep_dive/order/model/post_order_body.dart';
 import 'package:flutter_deep_dive/order/repository/order_repository.dart';
@@ -7,7 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 
 final orderProvider =
-StateNotifierProvider<OrderStateNotifier, List<OrderModel>>(
+StateNotifierProvider<OrderStateNotifier, CursorPaginationBase>(
       (ref) {
     final repo = ref.watch(orderRepositoryProvider);
 
@@ -18,19 +20,18 @@ StateNotifierProvider<OrderStateNotifier, List<OrderModel>>(
   },
 );
 
-class OrderStateNotifier extends StateNotifier<List<OrderModel>> {
+class OrderStateNotifier
+    extends PaginationProvider<OrderModel, OrderRepository> {
   final Ref ref;
-  final OrderRepository repository;
 
   OrderStateNotifier({
     required this.ref,
-    required this.repository,
-  }) : super([]);
+    required super.repository,
+  });
 
   Future<bool> postOrder() async {
     try {
-      //uuid는 왠만하면 백엔드에서 작업하자.
-      final uuid = const Uuid();
+      final uuid = Uuid();
 
       final id = uuid.v4();
 
